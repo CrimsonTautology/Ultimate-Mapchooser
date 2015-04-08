@@ -259,6 +259,7 @@ public DisplayNominatedMaps()
             {
                 count++;
                 PrintToChatAll("\x03[UMC]\x01 %d. %s (%s)", (count+1), map, group);
+                PrintToConsole(0, "[UMC] %d. %s (%s)", (count+1), map, group);
             }
 
         } while (KvGotoNextKey(g_UMCMapKV));
@@ -271,6 +272,7 @@ public DisplayNominatedMaps()
     {
         //nothing nominated
         PrintToChatAll("\x03[UMC]\x01 -empty-");
+        PrintToConsole(0, "[UMC] -empty-");
     }
 
 }
