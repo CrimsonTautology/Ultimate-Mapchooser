@@ -51,8 +51,6 @@ public OnPluginStart()
     g_Cvar_GroupExclude = FindConVar("sm_umc_nominate_groupexclude");
     g_Cvar_MapExclude = FindConVar("sm_umc_nominate_mapexclude");
 
-    RegConsoleCmd("sm_test", Command_Test, "TODO: TEST");
-
     RegConsoleCmd("sm_nomsearch", Command_Nomgrep, "Search the map list for a given search key");
     RegConsoleCmd("sm_nomgrep", Command_Nomgrep, "Search the map list for a given search key");
     RegConsoleCmd("sm_noms", Command_Noms, "Display list of nominated maps to players.");
@@ -77,11 +75,6 @@ public OnConfigsExecuted()
     new groups = GetConVarInt(g_Cvar_GroupExclude);
     AddToMemoryArray(current_map, g_MapMemory, maps);
     AddToMemoryArray(current_group, g_GroupMemory, (maps > groups) ? maps : groups);
-}
-
-public Action:Command_Test(client, args)
-{
-    return Plugin_Handled;
 }
 
 public Action:Command_Nomgrep(client, args)
