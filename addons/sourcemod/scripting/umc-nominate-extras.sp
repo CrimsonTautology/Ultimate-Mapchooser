@@ -79,7 +79,7 @@ public OnConfigsExecuted()
 
 public Action:Command_Nomgrep(client, args)
 {
-    if(!client) return Plugin_Handled;
+    //if(!client) return Plugin_Handled;
 
     if(HasVoteCompleted())
     {
@@ -165,7 +165,7 @@ bool:ReloadMapcycle()
 
 public bool:MapSearch(client, const String:search_key[])
 {
-    new String:map[MAP_LENGTH], String:group[MAP_LENGTH];
+    decl String:map[MAP_LENGTH], String:group[MAP_LENGTH], String:tmp[MAP_LENGTH*2];
     new Handle:menu = CreateMenu(NominationMenuHandler);
 
     if (!KvGotoFirstSubKey(g_UMCMapKV)) return false;
@@ -181,8 +181,9 @@ public bool:MapSearch(client, const String:search_key[])
             KvGetSectionName(g_UMCMapKV, map, sizeof(map));
             if(StrContains(map, search_key, false) >= 0)
             {
+                FormatEx(tmp, sizeof(tmp), "%s:%s", map, group);
                 AddMenuItem(menu,
-                        map,
+                        tmp,
                         map,
                         UMC_IsMapNominated(map, group) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT
                         );
@@ -210,15 +211,16 @@ public NominationMenuHandler(Handle:menu, MenuAction:action, client, param2)
     {
         case MenuAction_Select: //The client has picked something.
             {
-                //Get the selected map.
-                decl String:map[MAP_LENGTH], String:group[MAP_LENGTH];
-                GetMenuItem(menu, param2, map, sizeof(map));
-                //GetArrayString(nom_menu_groups[client], param2, group, sizeof(group));
-                KvFindGroupOfMap(g_UMCMapCycle, map, group, sizeof(group));
+                //Get selected map and group from param2; seperated by ':'
+                decl String:map[MAP_LENGTH], String:group[MAP_LENGTH], String:tmp[MAP_LENGTH*2], split;
 
-                KvRewind(g_UMCMapKV);
+                GetMenuItem(menu, param2, tmp, sizeof(tmp));
+                split = SplitString(tmp, ":", map, sizeof(map));
+                if(split == -1) return;
+                strcopy(group, sizeof(group), tmp[split]);
 
                 //Nominate it.
+                KvRewind(g_UMCMapKV);
                 UMC_NominateMap(g_UMCMapKV, map, group, client);
 
                 //Display a message.
